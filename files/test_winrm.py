@@ -1,7 +1,7 @@
 import winrm
 
 # Define the connection parameters
-server_url = "http://172.190.163.61:5985/wsman"
+server_url = "http://52.224.49.152:5985/wsman"
 username = "adminuser"
 password = "Password1234!"
 
