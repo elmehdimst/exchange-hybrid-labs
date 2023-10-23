@@ -217,12 +217,16 @@ resource "azurerm_virtual_machine" "dc01" {
     }
   }
   
-  provisioner "remote-exec" {
-    inline = [
-      "powershell.exe Install-WindowsFeature -Name AD-Domain-Services",
-      "powershell.exe Install-WindowsFeature -Name DNS",
-      "powershell.exe Set-ExecutionPolicy Unrestricted -Force"
-    ]
+provisioner "remote-exec" {
+  inline = [
+    "powershell.exe Install-WindowsFeature -Name AD-Domain-Services",
+    "powershell.exe Install-WindowsFeature -Name DNS",
+    "powershell.exe Set-ExecutionPolicy Unrestricted -Force",
+    "powershell.exe Import-Module ActiveDirectory",
+    "powershell.exe $domainName = '${var.dc_domain_name}'",
+    "powershell.exe $safeModeAdminPassword = ConvertTo-SecureString '${var.password}' -AsPlainText -Force",
+    "powershell.exe Install-ADDSDomainController -DomainName $domainName -SafeModeAdministratorPassword $safeModeAdminPassword -Force"
+  ]
 
     connection {
       type     = "winrm"
