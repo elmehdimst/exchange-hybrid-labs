@@ -24,3 +24,14 @@ Stop-Service -Name WinRM
 Set-Service -Name WinRM -StartupType Automatic
 netsh advfirewall firewall set rule name="Windows Remote Management (HTTP-In)" new action=allow localip=any remoteip=any
 Start-Service -Name WinRM
+
+# Disable Windows Firewall
+Write-Host "Disabling Windows Firewall"
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+
+# Disable IE Enhanced Security Configuration (IE ESC) for Administrators and Users
+Write-Host "Disabling IE Enhanced Security Configuration (IE ESC)"
+$AdminKey = 'HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}'
+$UserKey = 'HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}'
+Set-ItemProperty -Path $AdminKey -Name "IsInstalled" -Value 0
+Set-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0
