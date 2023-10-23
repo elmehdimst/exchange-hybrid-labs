@@ -19,14 +19,14 @@ jobs:
     - name: Terraform Initialize
       run: terraform init
 
-    #- name: Terraform Destroy
-    #  run: terraform destroy -auto-approve
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
 
     - name: Terraform Plan
       run: terraform plan
 
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
+    #- name: Terraform Apply
+    #  run: terraform apply -auto-approve
 
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
