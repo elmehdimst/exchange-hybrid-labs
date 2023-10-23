@@ -241,44 +241,57 @@ resource "azurerm_virtual_machine" "dc01" {
   }
 }
 
-output "dc01_public_fqdn" {
-  value = azurerm_public_ip.dc01_pip.fqdn
-}
-
-output "dc01_public_ip" {
-  value = azurerm_public_ip.dc01_pip.ip_address
-}
-
-/*
-resource "azurerm_windows_virtual_machine" "ex01" {
+resource "azurerm_virtual_machine" "ex01" {
   name                  = "EX01"
   location              = azurerm_resource_group.exchangelab.location
   resource_group_name   = azurerm_resource_group.exchangelab.name
-  size                  = "Standard_DS2_v2"
+  vm_size               = "Standard_DS2_v2"
   network_interface_ids = [azurerm_network_interface.ex01_nic.id]
 
-  computer_name  = "ex01"
-  admin_username = "adminuser"
-  admin_password = "Password1234!"
-
-  os_disk {
-    name                 = "ex01-osdisk"
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  winrm_listener {
-    protocol = "Http"
-  }
-
-  source_image_reference {
+  storage_image_reference {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
     sku       = "2019-Datacenter"
     version   = "latest"
   }
 
-  provisioner "remote-exec" {
+  storage_os_disk {
+    name              = "ex01-osdisk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Premium_LRS"
+  }
+
+  os_profile {
+    computer_name  = "ex01"
+    admin_username = var.username
+    admin_password = var.password
+    custom_data    = file("./files/winrm.ps1")
+  }
+
+  os_profile_windows_config {
+    provision_vm_agent = true
+    winrm {
+      protocol = "HTTP"
+    }
+    # Auto-Login's required to configure WinRM
+    additional_unattend_config {
+      pass         = "oobeSystem"
+      component    = "Microsoft-Windows-Shell-Setup"
+      setting_name = "AutoLogon"
+      content      = "<AutoLogon><Password><Value>${var.password}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.username}</Username></AutoLogon>"
+    }
+
+    # Unattend config is to enable basic auth in WinRM, required for the provisioner stage.
+    additional_unattend_config {
+      pass         = "oobeSystem"
+      component    = "Microsoft-Windows-Shell-Setup"
+      setting_name = "FirstLogonCommands"
+      content      = file("./files/FirstLogonCommands.xml")
+    }
+  }
+  
+    provisioner "remote-exec" {
     inline = [
       "powershell.exe Install-WindowsFeature -Name Web-Server",
       "powershell.exe Set-ExecutionPolicy Unrestricted -Force"
@@ -286,16 +299,25 @@ resource "azurerm_windows_virtual_machine" "ex01" {
 
     connection {
       type     = "winrm"
-      user     = "adminuser"
-      password = "Password1234!"
-      host     = azurerm_public_ip.ex01_pip.ip_address
+      user     = var.username
+      password = var.password
       timeout  = "5m"
-      insecure = false
-      https    = true
+      https    = false
+      insecure = true
+      port     = 5985
+      host     = azurerm_public_ip.ex01_pip.ip_address
     }
   }
-
+  
   provisioner "local-exec" {
     command = "echo ${azurerm_public_ip.ex01_pip.ip_address} >> ansible_inventory.txt"
   }
-}*/
+}
+
+output "dc01_public_ip" {
+  value = azurerm_public_ip.ex01_pip.ip_address
+}
+
+output "ex01_public_ip" {
+  value = azurerm_public_ip.dc01_pip.ip_address
+}
