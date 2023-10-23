@@ -118,7 +118,7 @@ resource "azurerm_public_ip" "dc01_pip" {
   name                = "dc01-public-ip"
   location            = azurerm_resource_group.exchangelab.location
   resource_group_name = azurerm_resource_group.exchangelab.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 }
 
 resource "azurerm_network_interface" "dc01_nic" {
@@ -140,7 +140,7 @@ resource "azurerm_public_ip" "ex01_pip" {
   name                = "ex01-public-ip"
   location            = azurerm_resource_group.exchangelab.location
   resource_group_name = azurerm_resource_group.exchangelab.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 }
 
 resource "azurerm_network_interface" "ex01_nic" {
@@ -232,7 +232,7 @@ resource "azurerm_virtual_machine" "dc01" {
       https    = false
       insecure = true
       port     = 5985
-      host     = azurerm_public_ip.dc01_pip.fqdn
+      host     = azurerm_public_ip.dc01_pip.ip_address
     }
   }
   */
