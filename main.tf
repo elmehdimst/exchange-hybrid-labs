@@ -232,7 +232,7 @@ provisioner "remote-exec" {
       type     = "winrm"
       user     = var.username
       password = var.password
-      timeout  = "5m"
+      timeout  = "10m"
       https    = false
       insecure = true
       port     = 5985
