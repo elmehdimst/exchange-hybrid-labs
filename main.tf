@@ -216,7 +216,7 @@ resource "azurerm_virtual_machine" "dc01" {
       content      = file("./files/FirstLogonCommands.xml")
     }
   }
-  
+/*  
 provisioner "remote-exec" {
   inline = [
     "powershell.exe Install-WindowsFeature -Name AD-Domain-Services",
@@ -237,7 +237,7 @@ provisioner "remote-exec" {
       host     = azurerm_public_ip.dc01_pip.ip_address
     }
   }
-  
+  */
   provisioner "local-exec" {
     command = "echo ${azurerm_public_ip.dc01_pip.ip_address} >> ansible_inventory.txt"
   }
@@ -315,7 +315,7 @@ resource "azurerm_virtual_machine" "ex01" {
     command = "echo ${azurerm_public_ip.ex01_pip.ip_address} >> ansible_inventory.txt"
   }
 }
-*/
+
 
 output "dc01_public_ip" {
   value = azurerm_public_ip.ex01_pip.ip_address
@@ -324,3 +324,4 @@ output "dc01_public_ip" {
 output "ex01_public_ip" {
   value = azurerm_public_ip.dc01_pip.ip_address
 }
+*/
