@@ -28,12 +28,6 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve
 
-    #- name: Run Ansible Playbook using action-ansible-playbook
-    #  uses: dawidd6/action-ansible-playbook@v2.6.1
-    #  with:
-    #    playbook: playbook.yml
-    #    inventory: your_inventory_file.ini
-    #    
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

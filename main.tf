@@ -216,28 +216,53 @@ resource "azurerm_virtual_machine" "dc01" {
       content      = file("./files/FirstLogonCommands.xml")
     }
   }
-/*  
-provisioner "remote-exec" {
-  inline = [
-    "powershell.exe Install-WindowsFeature -Name AD-Domain-Services",
-    "powershell.exe Install-WindowsFeature -Name DNS",
-    "powershell.exe Set-ExecutionPolicy Unrestricted -Force",
-    "powershell.exe Import-Module ActiveDirectory",
-    "powershell.exe $domainName = '${var.dc_domain_name}'; $safeModeAdminPassword = ConvertTo-SecureString '${var.password}' -AsPlainText -Force; Install-ADDSDomainController -DomainName $domainName -SafeModeAdministratorPassword $safeModeAdminPassword -Force"
-  ]
+
+  provisioner "remote-exec" {
+    inline = [
+      # Install necessary Windows features
+      "powershell.exe Install-WindowsFeature -Name DNS",
+      "powershell.exe Install-WindowsFeature -Name AD-Domain-Services",
+      "powershell.exe Install-WindowsFeature RSAT-ADDS",
+      "powershell.exe Install-WindowsFeature RSAT-ADLDS",
+    ]
 
     connection {
       type     = "winrm"
       user     = var.username
       password = var.password
-      timeout  = "5m"
+      timeout  = "2m"
       https    = false
       insecure = true
       port     = 5985
       host     = azurerm_public_ip.dc01_pip.ip_address
     }
   }
-  */
+
+  provisioner "local-exec" {
+    command = "sleep 300" # Wait for 5 minutes
+  }
+
+  provisioner "remote-exec" {  
+      inline = [
+      "powershell.exe Set-ExecutionPolicy Unrestricted -Force",
+      "powershell.exe Import-Module ActiveDirectory",
+      "powershell.exe $domainName = '${var.dc_domain_name}'; $safeModeAdminPassword = ConvertTo-SecureString '${var.password}' -AsPlainText -Force; Install-ADDSForest -DomainName $domainName -SafeModeAdministratorPassword $safeModeAdminPassword -Force -Confirm:$false",
+      "powershell.exe $site = Get-ADReplicationSite -Identity 'Default-First-Site-Name'; Rename-ADObject -Identity $site.DistinguishedName -NewName 'Azure'",
+      "powershell.exe New-ADReplicationSubnet -Name '10.1.0.0/24' -Description 'LabSubnet' -Site 'Azure'",
+    ]
+  
+      connection {
+        type     = "winrm"
+        user     = var.username
+        password = var.password
+        timeout  = "2m"
+        https    = false
+        insecure = true
+        port     = 5985
+        host     = azurerm_public_ip.dc01_pip.ip_address
+      }
+    }
+  
   provisioner "local-exec" {
     command = "echo ${azurerm_public_ip.dc01_pip.ip_address} >> ansible_inventory.txt"
   }
