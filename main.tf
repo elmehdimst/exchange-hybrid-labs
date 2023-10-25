@@ -237,7 +237,7 @@ resource "azurerm_virtual_machine" "dc01" {
       host     = azurerm_public_ip.dc01_pip.ip_address
     }
   }
-
+/*
   provisioner "local-exec" {
     command = "sleep 300" # Wait for 5 minutes
   }
@@ -262,7 +262,7 @@ resource "azurerm_virtual_machine" "dc01" {
         host     = azurerm_public_ip.dc01_pip.ip_address
       }
     }
-  
+  */
   provisioner "local-exec" {
     command = "echo ${azurerm_public_ip.dc01_pip.ip_address} >> ansible_inventory.txt"
   }
