@@ -9,6 +9,6 @@ variable "password" {
 }
 
 variable "dc_domain_name" {
-  default     = "Password1234!"
-  description = "safe Mode Admin Password"
+  default     = "demolabs50.local"
+  description = "DC local domain name"
 }

@@ -1,0 +1,34 @@
+---
+- name: Configure Windows Server for AD Domain Services
+  hosts: windows
+  gather_facts: no
+  tasks:
+    - name: Install AD-Domain-Services feature
+      win_shell: Install-WindowsFeature -Name AD-Domain-Services
+
+    - name: Install DNS feature
+      win_shell: Install-WindowsFeature -Name DNS
+
+    - name: Set Execution Policy to Unrestricted
+      win_shell: Set-ExecutionPolicy Unrestricted -Force
+
+    - name: Import ActiveDirectory module
+      win_shell: Import-Module ActiveDirectory
+
+    - name: Set domain name and password variables
+      win_shell: |
+        $domainName = '{{ dc_domain_name }}'
+        $safeModeAdminPassword = ConvertTo-SecureString '{{ password }}' -AsPlainText -Force
+
+    - name: Install ADDS Domain Controller
+      win_shell: Install-ADDSDomainController -DomainName $domainName -SafeModeAdministratorPassword $safeModeAdminPassword -Force
+
+  vars:
+    ansible_connection: winrm
+    ansible_winrm_transport: ntlm
+    ansible_winrm_server_cert_validation: ignore
+    ansible_user: "{{ username }}"
+    ansible_password: "{{ password }}"
+    ansible_port: 5985
+    ansible_winrm_scheme: http
+    ansible_host: "{{ host_ip }}"

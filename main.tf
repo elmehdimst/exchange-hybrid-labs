@@ -232,7 +232,7 @@ provisioner "remote-exec" {
       type     = "winrm"
       user     = var.username
       password = var.password
-      timeout  = "10m"
+      timeout  = "5m"
       https    = false
       insecure = true
       port     = 5985
@@ -312,11 +312,12 @@ resource "azurerm_virtual_machine" "ex01" {
       host     = azurerm_public_ip.ex01_pip.ip_address
     }
   }
-  
+
   provisioner "local-exec" {
     command = "echo ${azurerm_public_ip.ex01_pip.ip_address} >> ansible_inventory.txt"
   }
 }
+*/
 
 output "dc01_public_ip" {
   value = azurerm_public_ip.ex01_pip.ip_address
@@ -325,4 +326,3 @@ output "dc01_public_ip" {
 output "ex01_public_ip" {
   value = azurerm_public_ip.dc01_pip.ip_address
 }
-*/
