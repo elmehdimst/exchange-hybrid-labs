@@ -223,9 +223,7 @@ provisioner "remote-exec" {
     "powershell.exe Install-WindowsFeature -Name DNS",
     "powershell.exe Set-ExecutionPolicy Unrestricted -Force",
     "powershell.exe Import-Module ActiveDirectory",
-    "powershell.exe $domainName = '${var.dc_domain_name}'",
-    "powershell.exe $safeModeAdminPassword = ConvertTo-SecureString '${var.password}' -AsPlainText -Force",
-    "powershell.exe Install-ADDSDomainController -DomainName $domainName -SafeModeAdministratorPassword $safeModeAdminPassword -Force"
+    "powershell.exe $domainName = '${var.dc_domain_name}'; $safeModeAdminPassword = ConvertTo-SecureString '${var.password}' -AsPlainText -Force; Install-ADDSDomainController -DomainName $domainName -SafeModeAdministratorPassword $safeModeAdminPassword -Force"
   ]
 
     connection {
