@@ -30,7 +30,8 @@ jobs:
 
     - name: Assign Custom DNS to VNet
       run: |
-        terraform apply -var="custom_dns=10.1.0.4" -target=azurerm_virtual_network.LabNetwork -auto-approve
+        terraform plan -var="custom_dns=10.1.0.4"
+        terraform apply -var="custom_dns=10.1.0.4" -auto-approve
 
     - name: Deploy Exchange Server
       run: |

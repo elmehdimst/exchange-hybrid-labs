@@ -346,7 +346,6 @@ resource "azurerm_virtual_machine" "ex01" {
   }
 }
 
-
 output "dc01_public_ip" {
   value = azurerm_public_ip.ex01_pip.ip_address
 }
