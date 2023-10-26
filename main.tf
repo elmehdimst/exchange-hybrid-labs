@@ -9,10 +9,10 @@ provider "azurerm" {
 
 terraform {
   backend "azurerm" {
-    resource_group_name   = "TerraformBackend"
-    storage_account_name  = "terraformbackendstg50"
-    container_name        = "terraform-backend"
-    key                   = "exchange-lab.tfstate"  # This is the name of the state file to be created in the container.
+    resource_group_name  = "TerraformBackend"
+    storage_account_name = "terraformbackendstg50"
+    container_name       = "terraform-backend"
+    key                  = "exchange-lab.tfstate" # This is the name of the state file to be created in the container.
   }
 }
 
@@ -26,6 +26,7 @@ resource "azurerm_virtual_network" "labnetwork" {
   address_space       = ["10.1.0.0/16"]
   location            = azurerm_resource_group.exchangelab.location
   resource_group_name = azurerm_resource_group.exchangelab.name
+  dns_servers         = var.custom_dns != "" ? [var.custom_dns] : []
 }
 
 resource "azurerm_subnet" "labsubnet" {
@@ -224,47 +225,47 @@ resource "azurerm_virtual_machine" "dc01" {
       "powershell.exe Install-WindowsFeature -Name AD-Domain-Services",
       "powershell.exe Install-WindowsFeature RSAT-ADDS",
       "powershell.exe Install-WindowsFeature RSAT-ADLDS",
+      "powershell.exe $domainName = '${var.dc_domain_name}'; $safeModeAdminPassword = ConvertTo-SecureString '${var.password}' -AsPlainText -Force; Install-ADDSForest -DomainName $domainName -SafeModeAdministratorPassword $safeModeAdminPassword -Force -Confirm:$false",
     ]
 
     connection {
       type     = "winrm"
       user     = var.username
       password = var.password
-      timeout  = "2m"
+      timeout  = "10m"
       https    = false
       insecure = true
       port     = 5985
       host     = azurerm_public_ip.dc01_pip.ip_address
     }
   }
-/*
+
   provisioner "local-exec" {
-    command = "sleep 300" # Wait for 5 minutes
+    command = "sleep 600" # Wait for 10 minutes
   }
 
-  provisioner "remote-exec" {  
-      inline = [
+  provisioner "remote-exec" {
+    inline = [
       "powershell.exe Set-ExecutionPolicy Unrestricted -Force",
       "powershell.exe Import-Module ActiveDirectory",
-      "powershell.exe $domainName = '${var.dc_domain_name}'; $safeModeAdminPassword = ConvertTo-SecureString '${var.password}' -AsPlainText -Force; Install-ADDSForest -DomainName $domainName -SafeModeAdministratorPassword $safeModeAdminPassword -Force -Confirm:$false",
-      "powershell.exe $site = Get-ADReplicationSite -Identity 'Default-First-Site-Name'; Rename-ADObject -Identity $site.DistinguishedName -NewName 'Azure'",
+      "powershell.exe -Command \"Rename-ADObject -Identity 'CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=demolabs50,DC=local' -NewName 'Azure'\"",
       "powershell.exe New-ADReplicationSubnet -Name '10.1.0.0/24' -Description 'LabSubnet' -Site 'Azure'",
     ]
-  
-      connection {
-        type     = "winrm"
-        user     = var.username
-        password = var.password
-        timeout  = "2m"
-        https    = false
-        insecure = true
-        port     = 5985
-        host     = azurerm_public_ip.dc01_pip.ip_address
-      }
+
+    connection {
+      type     = "winrm"
+      user     = var.username
+      password = var.password
+      timeout  = "10m"
+      https    = false
+      insecure = true
+      port     = 5985
+      host     = azurerm_public_ip.dc01_pip.ip_address
     }
-  */
+  }
+
   provisioner "local-exec" {
-    command = "echo ${azurerm_public_ip.dc01_pip.ip_address} >> ansible_inventory.txt"
+    command = "echo ${azurerm_public_ip.dc01_pip.ip_address} > ansible_inventory.txt"
   }
 }
 /*
