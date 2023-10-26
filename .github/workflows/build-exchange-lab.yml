@@ -32,29 +32,14 @@ jobs:
       run: |
         terraform apply -var="custom_dns=10.1.0.4" -target=azurerm_virtual_network.LabNetwork
 
+    - name: Deploy Exchange Server
+      run: |
+        terraform apply -var="create_exchange=true"
+
     - name: Reboot Servers
       run: |
-        for ip in $(cat ansible_inventory.txt); do
-            echo "Public IP: $ip"
-            
-            PUBLIC_IP_ID=$(az network public-ip show --query "[?ipAddress=='$ip'].{id: id}" -o tsv)
-            echo "Public IP ID: $PUBLIC_IP_ID"
-            
-            if [ -z "$PUBLIC_IP_ID" ]; then
-              echo "Public IP ID not found."
-              exit 1
-            fi
-            
-            VM_ID=$(az network nic list --query "[?ipConfigurations[?publicIpAddress.id=='$PUBLIC_IP_ID']].{vm: virtualMachine.id}" -o tsv)
-            echo "VM ID: $VM_ID"
-            
-            if [ -z "$VM_ID" ]; then
-              echo "VM ID not found."
-              exit 1
-            fi
-            
-            az vm restart --ids $VM_ID
-        done
+        az vm restart -g ExchangeLab -n DC01
+        az vm restart -g ExchangeLab -n EX01
 
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}

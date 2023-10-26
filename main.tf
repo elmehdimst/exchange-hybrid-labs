@@ -270,6 +270,7 @@ resource "azurerm_virtual_machine" "dc01" {
 }
 
 resource "azurerm_virtual_machine" "ex01" {
+  count                 = var.create_exchange ? 1 : 0
   name                  = "EX01"
   location              = azurerm_resource_group.exchangelab.location
   resource_group_name   = azurerm_resource_group.exchangelab.name
@@ -318,8 +319,8 @@ resource "azurerm_virtual_machine" "ex01" {
       content      = file("./files/FirstLogonCommands.xml")
     }
   }
-  
-    provisioner "remote-exec" {
+
+  provisioner "remote-exec" {
     inline = [
       "powershell.exe Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools",
       "powershell.exe Install-WindowsFeature -Name RSAT-ADDS",

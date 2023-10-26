@@ -18,3 +18,9 @@ variable "custom_dns" {
   type        = string
   default     = ""
 }
+
+variable "create_exchange" {
+  description = "Boolean to control the creation of the virtual machine"
+  type        = bool
+  default     = false
+}
