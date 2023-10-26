@@ -268,7 +268,7 @@ resource "azurerm_virtual_machine" "dc01" {
     command = "echo ${azurerm_public_ip.dc01_pip.ip_address} > ansible_inventory.txt"
   }
 }
-/*
+
 resource "azurerm_virtual_machine" "ex01" {
   name                  = "EX01"
   location              = azurerm_resource_group.exchangelab.location
@@ -321,6 +321,9 @@ resource "azurerm_virtual_machine" "ex01" {
   
     provisioner "remote-exec" {
     inline = [
+      "powershell.exe Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools",
+      "powershell.exe Install-WindowsFeature -Name RSAT-ADDS",
+      "powershell.exe Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force))) -Force -Restart",
       "powershell.exe Install-WindowsFeature -Name Web-Server",
       "powershell.exe Set-ExecutionPolicy Unrestricted -Force"
     ]
@@ -329,7 +332,7 @@ resource "azurerm_virtual_machine" "ex01" {
       type     = "winrm"
       user     = var.username
       password = var.password
-      timeout  = "5m"
+      timeout  = "10m"
       https    = false
       insecure = true
       port     = 5985
@@ -350,4 +353,3 @@ output "dc01_public_ip" {
 output "ex01_public_ip" {
   value = azurerm_public_ip.dc01_pip.ip_address
 }
-*/

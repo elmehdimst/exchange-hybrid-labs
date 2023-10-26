@@ -35,9 +35,25 @@ jobs:
     - name: Reboot Servers
       run: |
         for ip in $(cat ansible_inventory.txt); do
-          PUBLIC_IP_ID=$(az network public-ip show --query "[?ipAddress=='$ip'].{id: id}" -o tsv)
-          VM_ID=$(az network nic list --query "[?ipConfigurations[?publicIpAddress.id=='$PUBLIC_IP_ID']].{vm: virtualMachine.id}" -o tsv)
-          az vm restart --ids $VM_ID
+            echo "Public IP: $ip"
+            
+            PUBLIC_IP_ID=$(az network public-ip show --query "[?ipAddress=='$ip'].{id: id}" -o tsv)
+            echo "Public IP ID: $PUBLIC_IP_ID"
+            
+            if [ -z "$PUBLIC_IP_ID" ]; then
+              echo "Public IP ID not found."
+              exit 1
+            fi
+            
+            VM_ID=$(az network nic list --query "[?ipConfigurations[?publicIpAddress.id=='$PUBLIC_IP_ID']].{vm: virtualMachine.id}" -o tsv)
+            echo "VM ID: $VM_ID"
+            
+            if [ -z "$VM_ID" ]; then
+              echo "VM ID not found."
+              exit 1
+            fi
+            
+            az vm restart --ids $VM_ID
         done
 
     env:
