@@ -19,8 +19,8 @@ jobs:
     - name: Terraform Initialize
       run: terraform init
 
-    #- name: Terraform Destroy
-    #  run: terraform destroy -auto-approve
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
 
     - name: Terraform Plan
       run: terraform plan
@@ -30,11 +30,11 @@ jobs:
 
     - name: Assign Custom DNS to VNet
       run: |
-        terraform apply -var="custom_dns=10.1.0.4" -target=azurerm_virtual_network.LabNetwork
+        terraform apply -var="custom_dns=10.1.0.4" -target=azurerm_virtual_network.LabNetwork -auto-approve
 
     - name: Deploy Exchange Server
       run: |
-        terraform apply -var="create_exchange=true"
+        terraform apply -var="create_exchange=true" -auto-approve
 
     - name: Reboot Servers
       run: |
