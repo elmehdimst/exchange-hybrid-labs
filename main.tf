@@ -26,8 +26,8 @@ resource "azurerm_virtual_network" "labnetwork" {
   address_space       = ["10.1.0.0/16"]
   location            = azurerm_resource_group.exchangelab.location
   resource_group_name = azurerm_resource_group.exchangelab.name
+  dns_servers         = ["10.1.0.4"]
   //dns_servers         = var.custom_dns != "" ? [var.custom_dns] : []
-  dns_servers         = "10.1.0.4"
 }
 
 resource "azurerm_subnet" "labsubnet" {
