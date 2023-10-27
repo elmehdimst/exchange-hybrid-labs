@@ -12,13 +12,13 @@ variable "dc_domain_name" {
   default     = "demolabs50.local"
   description = "DC local domain name"
 }
-
+/*
 variable "custom_dns" {
   description = "The custom DNS IP address for the VNet"
   type        = string
   default     = ""
 }
-
+*/
 variable "create_exchange" {
   description = "Boolean to control the creation of the virtual machine"
   type        = bool
