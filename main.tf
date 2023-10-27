@@ -26,8 +26,7 @@ resource "azurerm_virtual_network" "labnetwork" {
   address_space       = ["10.1.0.0/16"]
   location            = azurerm_resource_group.exchangelab.location
   resource_group_name = azurerm_resource_group.exchangelab.name
-  dns_servers         = ["10.1.0.4"]
-  //dns_servers         = var.custom_dns != "" ? [var.custom_dns] : []
+  dns_servers         = var.custom_dns != "" ? [var.custom_dns] : []
 }
 
 resource "azurerm_subnet" "labsubnet" {
@@ -168,7 +167,7 @@ resource "azurerm_network_interface_security_group_association" "ex01_nic_nsg_as
   network_interface_id      = azurerm_network_interface.ex01_nic.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
-
+/*
 resource "azurerm_virtual_machine" "dc01" {
   name                  = "DC01"
   location              = azurerm_resource_group.exchangelab.location
@@ -346,7 +345,7 @@ resource "azurerm_virtual_machine" "ex01" {
     command = "echo ${azurerm_public_ip.ex01_pip.ip_address} >> ansible_inventory.txt"
   }
 }
-
+*/
 output "dc01_public_ip" {
   value = azurerm_public_ip.ex01_pip.ip_address
 }
