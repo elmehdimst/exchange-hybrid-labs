@@ -42,6 +42,24 @@ resource "azurerm_network_security_group" "nsg" {
   resource_group_name = azurerm_resource_group.exchangelab.name
 
   security_rule {
+    name                       = "AllowAllInbound"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}
+/*
+resource "azurerm_network_security_group" "nsg" {
+  name                = "nsg"
+  location            = azurerm_resource_group.exchangelab.location
+  resource_group_name = azurerm_resource_group.exchangelab.name
+
+  security_rule {
     name                       = "RDP"
     priority                   = 1001
     direction                  = "Inbound"
@@ -113,7 +131,7 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 }
-
+*/
 # Public IP for dc01 VM
 resource "azurerm_public_ip" "dc01_pip" {
   name                = "dc01-public-ip"
@@ -322,8 +340,8 @@ resource "azurerm_virtual_machine" "ex01" {
 
   provisioner "remote-exec" {
     inline = [
-      "powershell.exe Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools",
-      "powershell.exe Install-WindowsFeature -Name RSAT-ADDS",
+      #"powershell.exe Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools",
+      #"powershell.exe Install-WindowsFeature -Name RSAT-ADDS",
       "powershell.exe Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force))) -Force -Restart",
       "powershell.exe Install-WindowsFeature -Name Web-Server",
       "powershell.exe Set-ExecutionPolicy Unrestricted -Force"
