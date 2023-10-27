@@ -167,7 +167,7 @@ resource "azurerm_network_interface_security_group_association" "ex01_nic_nsg_as
   network_interface_id      = azurerm_network_interface.ex01_nic.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
-/*
+
 resource "azurerm_virtual_machine" "dc01" {
   name                  = "DC01"
   location              = azurerm_resource_group.exchangelab.location
@@ -268,7 +268,7 @@ resource "azurerm_virtual_machine" "dc01" {
     command = "echo ${azurerm_public_ip.dc01_pip.ip_address} > ansible_inventory.txt"
   }
 }
-
+/*
 resource "azurerm_virtual_machine" "ex01" {
   count                 = var.create_exchange ? 1 : 0
   name                  = "EX01"
