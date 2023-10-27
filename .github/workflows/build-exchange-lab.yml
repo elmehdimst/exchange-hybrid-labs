@@ -19,8 +19,8 @@ jobs:
     - name: Terraform Initialize
       run: terraform init
 
-    - name: Terraform Destroy
-      run: terraform destroy -auto-approve
+    #- name: Terraform Destroy
+    #  run: terraform destroy -auto-approve
 
     - name: Terraform Plan
       run: terraform plan
@@ -36,7 +36,7 @@ jobs:
     #- name: Deploy Exchange Server
     #  run: |
     #    terraform apply -var="create_exchange=true" -auto-approve
-#
+
     #- name: Reboot Servers
     #  run: |
     #    az vm restart -g ExchangeLab -n DC01
