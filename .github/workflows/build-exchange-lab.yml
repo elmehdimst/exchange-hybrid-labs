@@ -18,23 +18,23 @@ jobs:
     #  with:
     #    creds: ${{ secrets.AZURE_CREDENTIALS }}
 #
-    #- name: Detach Azure Disk
-    #  run: |
-    #    az vm disk detach \
-    #      --name ex01-osdisk \
-    #      --resource-group ExchangeLab \
-    #      --vm-name EX01
-    #
-    #- name: Delete Azure Disk
-    #  run: |
-    #    az disk delete \
-    #      --name ex01-osdisk \
-    #      --resource-group ExchangeLab \
-    #      --yes \
-    #      --no-wait
-#
-    #- name: Logout of Azure
-    #  run: az logout      
+    - name: Detach Azure Disk
+      run: |
+        az vm disk detach \
+          --name ex01-osdisk \
+          --resource-group ExchangeLab \
+          --vm-name EX01
+    
+    - name: Delete Azure Disk
+      run: |
+        az disk delete \
+          --name ex01-osdisk \
+          --resource-group ExchangeLab \
+          --yes \
+          --no-wait
+
+    - name: Logout of Azure
+      run: az logout      
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
@@ -59,13 +59,8 @@ jobs:
       run: |
         terraform apply -var="create_exchange=true" -var="custom_dns=10.1.0.4" -auto-approve
 
-    - name: Assign Custom DNS to VNet
-      run: |
-        terraform apply -var="custom_dns=10.1.0.4" -auto-approve
-
     #- name: Reboot Servers
     #  run: |
-    #    az login
     #    az vm restart -g ExchangeLab -n DC01
     #    az vm restart -g ExchangeLab -n EX01
 
