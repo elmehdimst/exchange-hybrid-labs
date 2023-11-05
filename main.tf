@@ -343,8 +343,8 @@ resource "azurerm_virtual_machine" "ex01" {
       #"powershell.exe Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools",
       #"powershell.exe Install-WindowsFeature -Name RSAT-ADDS",
       #"powershell.exe Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force))) -Force -Restart",
-      #"powershell.exe Install-WindowsFeature -Name Web-Server",
-      #"powershell.exe Set-ExecutionPolicy Unrestricted -Force"
+      "powershell.exe Install-WindowsFeature -Name Web-Server",
+      "powershell.exe Set-ExecutionPolicy Unrestricted -Force"
     ]
 
     connection {
