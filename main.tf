@@ -132,7 +132,7 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 */
-# Public IP for dc01 VM
+
 resource "azurerm_public_ip" "dc01_pip" {
   name                = "dc01-public-ip"
   location            = azurerm_resource_group.exchangelab.location
@@ -154,8 +154,8 @@ resource "azurerm_network_interface" "dc01_nic" {
   }
 }
 
-# Public IP for ex01 VM
 resource "azurerm_public_ip" "ex01_pip" {
+  count                 = var.create_exchange ? 1 : 0
   name                = "ex01-public-ip"
   location            = azurerm_resource_group.exchangelab.location
   resource_group_name = azurerm_resource_group.exchangelab.name
@@ -163,6 +163,7 @@ resource "azurerm_public_ip" "ex01_pip" {
 }
 
 resource "azurerm_network_interface" "ex01_nic" {
+  count                 = var.create_exchange ? 1 : 0
   name                = "ex01-nic"
   location            = azurerm_resource_group.exchangelab.location
   resource_group_name = azurerm_resource_group.exchangelab.name
@@ -182,6 +183,7 @@ resource "azurerm_network_interface_security_group_association" "dc01_nic_nsg_as
 }
 
 resource "azurerm_network_interface_security_group_association" "ex01_nic_nsg_association" {
+  count                 = var.create_exchange ? 1 : 0
   network_interface_id      = azurerm_network_interface.ex01_nic.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
@@ -342,9 +344,9 @@ resource "azurerm_virtual_machine" "ex01" {
     inline = [
       #"powershell.exe Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools",
       #"powershell.exe Install-WindowsFeature -Name RSAT-ADDS",
-      "powershell.exe Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force))) -Force -Restart",
-      "powershell.exe Install-WindowsFeature -Name Web-Server",
-      "powershell.exe Set-ExecutionPolicy Unrestricted -Force"
+      "Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force)))",
+      "Install-WindowsFeature -Name Web-Server",
+      "Set-ExecutionPolicy Unrestricted -Force"
     ]
 
     connection {
