@@ -155,7 +155,6 @@ resource "azurerm_network_interface" "dc01_nic" {
 }
 
 resource "azurerm_public_ip" "ex01_pip" {
-  count                 = var.create_exchange ? 1 : 0
   name                = "ex01-public-ip"
   location            = azurerm_resource_group.exchangelab.location
   resource_group_name = azurerm_resource_group.exchangelab.name
@@ -367,9 +366,9 @@ resource "azurerm_virtual_machine" "ex01" {
 }
 
 output "dc01_public_ip" {
-  value = azurerm_public_ip.ex01_pip.ip_address
+  value = azurerm_public_ip.dc01_pip.ip_address
 }
 
 output "ex01_public_ip" {
-  value = azurerm_public_ip.dc01_pip.ip_address
+  value = azurerm_public_ip.ex01_pip.ip_address
 }
