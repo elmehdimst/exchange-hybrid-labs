@@ -50,10 +50,14 @@ jobs:
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
+    
+    - name: Assign Custom DNS to VNet
+      run: |
+        terraform apply -var="custom_dns=10.1.0.4" -auto-approve
 
     - name: Deploy Exchange Server
       run: |
-        terraform apply -var="create_exchange=true" -auto-approve
+        terraform apply -var="create_exchange=true" -var="custom_dns=10.1.0.4" -auto-approve
 
     - name: Assign Custom DNS to VNet
       run: |

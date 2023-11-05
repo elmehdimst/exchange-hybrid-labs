@@ -288,7 +288,7 @@ resource "azurerm_virtual_machine" "dc01" {
 }
 
 resource "azurerm_virtual_machine" "ex01" {
-  #count                 = var.create_exchange ? 1 : 0
+  count                 = var.create_exchange ? 1 : 0
   name                  = "EX01"
   location              = azurerm_resource_group.exchangelab.location
   resource_group_name   = azurerm_resource_group.exchangelab.name
