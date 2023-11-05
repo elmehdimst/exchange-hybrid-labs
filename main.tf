@@ -37,7 +37,7 @@ resource "azurerm_subnet" "labsubnet" {
 }
 
 resource "azurerm_network_security_group" "nsg" {
-  name                = "nsg"
+  name                = "LabNSG"
   location            = azurerm_resource_group.exchangelab.location
   resource_group_name = azurerm_resource_group.exchangelab.name
 
@@ -342,7 +342,7 @@ resource "azurerm_virtual_machine" "ex01" {
     inline = [
       #"powershell.exe Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools",
       #"powershell.exe Install-WindowsFeature -Name RSAT-ADDS",
-      "powershell.exe Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force))) -Force -Restart",
+      #"powershell.exe Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force))) -Force -Restart",
       "powershell.exe Install-WindowsFeature -Name Web-Server",
       "powershell.exe Set-ExecutionPolicy Unrestricted -Force"
     ]
