@@ -34,14 +34,13 @@ jobs:
 
     - name: Assign Custom DNS to VNet
       run: |
-        #terraform plan -var="custom_dns=10.1.0.4"
         terraform apply -var="custom_dns=10.1.0.4" -auto-approve
 
-    - name: Reboot Servers
-      run: |
-        az login
-        az vm restart -g ExchangeLab -n DC01
-        az vm restart -g ExchangeLab -n EX01
+    #- name: Reboot Servers
+    #  run: |
+    #    az login
+    #    az vm restart -g ExchangeLab -n DC01
+    #    az vm restart -g ExchangeLab -n EX01
 
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
