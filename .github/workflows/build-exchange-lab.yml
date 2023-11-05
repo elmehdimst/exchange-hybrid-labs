@@ -25,23 +25,23 @@ jobs:
     - name: Terraform Plan
       run: terraform plan
 
-      
-    #- name: Terraform Apply
-    #  run: terraform apply -auto-approve
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
 
-    #- name: Assign Custom DNS to VNet
-    #  run: |
-    #    #terraform plan -var="custom_dns=10.1.0.4"
-    #    terraform apply -var="custom_dns=10.1.0.4" -auto-approve
+    - name: Deploy Exchange Server
+      run: |
+        terraform apply -var="create_exchange=true" -auto-approve
 
-    #- name: Deploy Exchange Server
-    #  run: |
-    #    terraform apply -var="create_exchange=true" -var="custom_dns=10.1.0.4" -auto-approve
+    - name: Assign Custom DNS to VNet
+      run: |
+        #terraform plan -var="custom_dns=10.1.0.4"
+        terraform apply -var="custom_dns=10.1.0.4" -auto-approve
 
-    #- name: Reboot Servers
-    #  run: |
-    #    az vm restart -g ExchangeLab -n DC01
-    #    az vm restart -g ExchangeLab -n EX01
+    - name: Reboot Servers
+      run: |
+        az login
+        az vm restart -g ExchangeLab -n DC01
+        az vm restart -g ExchangeLab -n EX01
 
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
