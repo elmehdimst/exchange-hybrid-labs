@@ -18,7 +18,7 @@ terraform {
 
 resource "azurerm_resource_group" "exchangelab" {
   name     = "ExchangeLab"
-  location = "East US" # Change this based on your preferred region.
+  location = "East US"
 }
 
 resource "azurerm_virtual_network" "labnetwork" {
@@ -342,7 +342,7 @@ resource "azurerm_virtual_machine" "ex01" {
     inline = [
       #"powershell.exe Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools",
       #"powershell.exe Install-WindowsFeature -Name RSAT-ADDS",
-      #"powershell.exe Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force))) -Force -Restart",
+      "powershell.exe Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force))) -Force -Restart",
       "powershell.exe Install-WindowsFeature -Name Web-Server",
       "powershell.exe Set-ExecutionPolicy Unrestricted -Force"
     ]
@@ -351,7 +351,7 @@ resource "azurerm_virtual_machine" "ex01" {
       type     = "winrm"
       user     = var.username
       password = var.password
-      timeout  = "10m"
+      timeout  = "15m"
       https    = false
       insecure = true
       port     = 5985
