@@ -162,7 +162,6 @@ resource "azurerm_public_ip" "ex01_pip" {
 }
 
 resource "azurerm_network_interface" "ex01_nic" {
-  count                 = var.create_exchange ? 1 : 0
   name                = "ex01-nic"
   location            = azurerm_resource_group.exchangelab.location
   resource_group_name = azurerm_resource_group.exchangelab.name
@@ -182,7 +181,6 @@ resource "azurerm_network_interface_security_group_association" "dc01_nic_nsg_as
 }
 
 resource "azurerm_network_interface_security_group_association" "ex01_nic_nsg_association" {
-  count                 = var.create_exchange ? 1 : 0
   network_interface_id      = azurerm_network_interface.ex01_nic.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
