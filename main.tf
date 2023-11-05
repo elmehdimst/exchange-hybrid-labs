@@ -10,7 +10,7 @@ provider "azurerm" {
 terraform {
   backend "azurerm" {
     resource_group_name  = "TerraformBackend"
-    storage_account_name = "terraformbackendstg50"
+    storage_account_name = "terraformbackendstg51"
     container_name       = "terraform-backend"
     key                  = "exchange-lab.tfstate" # This is the name of the state file to be created in the container.
   }
