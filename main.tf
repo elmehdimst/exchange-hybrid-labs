@@ -12,7 +12,7 @@ terraform {
     resource_group_name  = "TerraformBackend"
     storage_account_name = "terraformbackendstg51"
     container_name       = "terraform-backend"
-    key                  = "exchange-lab.tfstate" # This is the name of the state file to be created in the container.
+    key                  = "exchange-lab.tfstate"
   }
 }
 
@@ -288,7 +288,7 @@ resource "azurerm_virtual_machine" "dc01" {
 }
 
 resource "azurerm_virtual_machine" "ex01" {
-  count                 = var.create_exchange ? 1 : 0
+  #count                 = var.create_exchange ? 1 : 0
   name                  = "EX01"
   location              = azurerm_resource_group.exchangelab.location
   resource_group_name   = azurerm_resource_group.exchangelab.name
@@ -343,8 +343,8 @@ resource "azurerm_virtual_machine" "ex01" {
       #"powershell.exe Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools",
       #"powershell.exe Install-WindowsFeature -Name RSAT-ADDS",
       #"powershell.exe Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force))) -Force -Restart",
-      "powershell.exe Install-WindowsFeature -Name Web-Server",
-      "powershell.exe Set-ExecutionPolicy Unrestricted -Force"
+      #"powershell.exe Install-WindowsFeature -Name Web-Server",
+      #"powershell.exe Set-ExecutionPolicy Unrestricted -Force"
     ]
 
     connection {
