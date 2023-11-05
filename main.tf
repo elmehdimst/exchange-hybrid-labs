@@ -337,13 +337,15 @@ resource "azurerm_virtual_machine" "ex01" {
     }
   }
 
+
+  provisioner "file" {
+    source      = "./files/exchange_config.ps1"
+    destination = "C:\\Temp\\exchange_config.ps1"
+  }
+
   provisioner "remote-exec" {
     inline = [
-      #"powershell.exe Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools",
-      #"powershell.exe Install-WindowsFeature -Name RSAT-ADDS",
-      "Add-Computer -DomainName ${var.dc_domain_name} -Credential (New-Object System.Management.Automation.PSCredential('${var.username}', (ConvertTo-SecureString '${var.password}' -AsPlainText -Force)))",
-      "Install-WindowsFeature -Name Web-Server",
-      "Set-ExecutionPolicy Unrestricted -Force"
+      "powershell.exe -File C:\\Temp\\exchange_config.ps1"
     ]
 
     connection {
@@ -356,6 +358,10 @@ resource "azurerm_virtual_machine" "ex01" {
       port     = 5985
       host     = azurerm_public_ip.ex01_pip.ip_address
     }
+  }
+
+  provisioner "local-exec" {
+    command = "sleep 300" # Wait for 5 minutes
   }
 
   provisioner "local-exec" {
