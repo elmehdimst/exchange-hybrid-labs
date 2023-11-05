@@ -13,22 +13,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
-    - name: Delete Azure Disk
-      run: |
-        az disk delete \
-          --name ex01-osdisk \
-          --resource-group ExchangeLab \
-          --yes \
-          --no-wait
-
-    - name: Logout of Azure
-      run: az logout      
-
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
@@ -48,9 +32,21 @@ jobs:
       run: |
         terraform apply -var="custom_dns=10.1.0.4" -auto-approve
 
-    - name: Deploy Exchange Server
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+       
+    - name: Reboot DC01 Server
       run: |
-        terraform apply -var="create_exchange=true" -var="custom_dns=10.1.0.4" -auto-approve
+        az vm restart -g ExchangeLab -n DC01
+
+    - name: Logout of Azure
+      run: az logout         
+
+    #- name: Deploy Exchange Server
+    #  run: |
+    #    terraform apply -var="create_exchange=true" -var="custom_dns=10.1.0.4" -auto-approve
 
     #- name: Reboot Servers
     #  run: |

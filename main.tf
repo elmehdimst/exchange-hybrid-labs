@@ -353,7 +353,8 @@ resource "azurerm_virtual_machine" "ex01" {
       host     = azurerm_public_ip.ex01_pip.ip_address
     }
   }
-
+  
+  /*
   provisioner "remote-exec" {
     inline = [
       "powershell.exe -File C:\\Temp\\exchange_config.ps1"
@@ -370,7 +371,8 @@ resource "azurerm_virtual_machine" "ex01" {
       host     = azurerm_public_ip.ex01_pip.ip_address
     }
   }
-
+  */
+  
   provisioner "local-exec" {
     command = "sleep 300" # Wait for 5 minutes
   }
