@@ -17,6 +17,13 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Detach Azure Disk
+      run: |
+        az vm disk detach \
+          --name ex01-osdisk \
+          --resource-group ExchangeLab \
+          --vm-name EX01
     
     - name: Delete Azure Disk
       run: |
@@ -28,7 +35,7 @@ jobs:
 
     - name: Logout of Azure
       run: az logout      
-      
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
