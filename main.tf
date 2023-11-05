@@ -341,6 +341,17 @@ resource "azurerm_virtual_machine" "ex01" {
   provisioner "file" {
     source      = "./files/exchange_config.ps1"
     destination = "C:\\Temp\\exchange_config.ps1"
+
+      connection {
+      type     = "winrm"
+      user     = var.username
+      password = var.password
+      timeout  = "15m"
+      https    = false
+      insecure = true
+      port     = 5985
+      host     = azurerm_public_ip.ex01_pip.ip_address
+    }
   }
 
   provisioner "remote-exec" {
