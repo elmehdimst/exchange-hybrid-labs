@@ -19,18 +19,18 @@ jobs:
     - name: Terraform Initialize
       run: terraform init
 
-    #- name: Terraform Destroy
-    #  run: terraform destroy -auto-approve
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
 
-    #- name: Terraform Plan
-    #  run: terraform plan
+    - name: Terraform Plan
+      run: terraform plan
 
-    #- name: Terraform Apply
-    #  run: terraform apply -auto-approve
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
     
-    #- name: Assign Custom DNS to VNet
-    #  run: |
-    #    terraform apply -var="custom_dns=10.1.0.4" -auto-approve
+    - name: Assign Custom DNS to VNet
+      run: |
+        terraform apply -var="custom_dns=10.1.0.4" -auto-approve
 
     - name: Login to Azure
       uses: azure/login@v1
