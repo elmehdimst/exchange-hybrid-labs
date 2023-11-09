@@ -34,7 +34,7 @@ Invoke-WebRequest -Uri $exchange2019_cu13_Url -OutFile $exchange2019_cu13_Output
 
 # Define the URLs for IIS URL rewrite module
 $rewrite_amd64_Url = "https://download.microsoft.com/download/1/2/8/128E2E22-C1B9-44A4-BE2A-5859ED1D4592/rewrite_amd64_en-US.msi"
-$rewrite_amd64_Output = "C:\Temp\ExchangeServer2019-x64-CU13.iso"
+$rewrite_amd64_Output = "C:\Temp\rewrite_amd64_en-US.msi"
 Invoke-WebRequest -Uri $rewrite_amd64_Url -OutFile $rewrite_amd64_Output
 
 # Restart the computer
